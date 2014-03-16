@@ -42,7 +42,7 @@ app.get('/home', function(req, res){
 				time_created_date.setUTCSeconds(items[i].time_created)
 				var time_completed_date = new Date(0);
 				time_completed_date.setUTCSeconds(items[i].time_completed)
-				xids[i]={xid: items[i].xid, time_created: time_created_date, time_completed: time_completed_date}
+				xids[i]={time_created: time_created_date, time_completed: time_completed_date, intensity_url: "http://localhost:3000/home/"+items[i].xid}
 			}
 			res.send(xids)
 		})  
@@ -54,7 +54,7 @@ app.get('/home/:xid', function(req, res){
 	var up = require('jawbone-up')(options);
 	var move_xid = req.url.split("/")[2];
 	up.moves.snapshot({ xid : move_xid}, function(req, intensity_data){
-		res.send(intensity_data);
+		res.send(JSON.parse(intensity_data));
 	})
 
 })
