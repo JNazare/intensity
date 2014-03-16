@@ -35,13 +35,28 @@ app.get('/home', function(req, res){
 		var options = {access_token: req.session.token};
 		var up = require('jawbone-up')(options);
 		up.moves.get({}, function(req, moves_data){
-			res.send(moves_data);
-			// var move_xid = JSON.parse(moves_data).meta.user_xid;
-			// up.moves.snapshot({ xid : move_xid }, function(req, intensity_data){
-			// 	res.send(intensity_data);
-			// })
+			var items = JSON.parse(moves_data).data.items
+			xids = []
+			for(i=0; i<items.length; i++){
+				var time_created_date = new Date(0);
+				time_created_date.setUTCSeconds(items[i].time_created)
+				var time_completed_date = new Date(0);
+				time_completed_date.setUTCSeconds(items[i].time_completed)
+				xids[i]={xid: items[i].xid, time_created: time_created_date, time_completed: time_completed_date}
+			}
+			res.send(xids)
 		})  
 	})
+});
+
+app.get('/home/:xid', function(req, res){
+	var options = {access_token: req.session.token};
+	var up = require('jawbone-up')(options);
+	var move_xid = req.url.split("/")[2];
+	up.moves.snapshot({ xid : move_xid}, function(req, intensity_data){
+		res.send(intensity_data);
+	})
+
 })
 
 http.createServer(app).listen(app.get('port'), function(){
