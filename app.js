@@ -38,11 +38,13 @@ app.get('/home', function(req, res){
 			var items = JSON.parse(moves_data).data.items
 			xids = []
 			for(i=0; i<items.length; i++){
+				(function(i){
 				var time_created_date = new Date(0);
 				time_created_date.setUTCSeconds(items[i].time_created)
 				var time_completed_date = new Date(0);
 				time_completed_date.setUTCSeconds(items[i].time_completed)
 				xids[i]={time_created: time_created_date, time_completed: time_completed_date, intensity_url: "http://localhost:3000/home/"+items[i].xid}
+				})(i)
 			}
 			res.send(xids)
 		})  
